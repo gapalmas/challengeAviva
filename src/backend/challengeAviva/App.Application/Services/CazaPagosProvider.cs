@@ -17,13 +17,27 @@ namespace App.Application.Services
         public bool Supports(PaymentMode mode) =>
             mode is PaymentMode.Card or PaymentMode.Transfer;
 
-        public decimal CalculateFee(decimal amount, PaymentMode mode) =>
-            mode switch
+        public decimal CalculateFee(decimal amount, PaymentMode mode)
+        {
+            return mode switch
             {
-                PaymentMode.Card => amount * 0.025m,
-                PaymentMode.Transfer => amount * 0.01m,
+                PaymentMode.Card => amount switch
+                {
+                    <= 1500 => amount * 0.02m,
+                    <= 5000 => amount * 0.015m,
+                    _ => amount * 0.005m
+                },
+
+                PaymentMode.Transfer => amount switch
+                {
+                    <= 500 => 5m,
+                    <= 1000 => amount * 0.025m,
+                    _ => amount * 0.02m
+                },
+
                 _ => throw new NotSupportedException()
             };
+        }
 
         public async Task<bool> CreateOrderAsync(Order order)
         {

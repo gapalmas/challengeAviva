@@ -18,8 +18,8 @@ namespace App.Application.Services
         public decimal CalculateFee(decimal amount, PaymentMode mode) =>
             mode switch
             {
-                PaymentMode.Cash => amount * 0.02m,
-                PaymentMode.Card => amount * 0.03m,
+                PaymentMode.Cash => 15m,              // 15 MXN
+                PaymentMode.Card => amount * 0.01m,   // 1%
                 _ => throw new NotSupportedException()
             };
 
