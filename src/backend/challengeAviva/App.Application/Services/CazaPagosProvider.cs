@@ -2,13 +2,15 @@
 using App.Core.Enums;
 using App.Core.Interfaces;
 using Flurl.Http;
+using Newtonsoft.Json;
+using System.Xml;
 
 namespace App.Application.Services
 {
     public class CazaPagosProvider : IPaymentProvider
     {
         private const string ApiKey = "apikey-fj9esodija09s2";
-        private const string BaseUrl = "https://app-cazapagos-chg-aviva.azurewebsites.net";
+        private const string BaseUrl = "https://app-caza-chg-aviva.azurewebsites.net";
 
         public string Name => "CazaPagos";
 
@@ -29,8 +31,8 @@ namespace App.Application.Services
             {
                 method = order.Status switch
                 {
-                    OrderStatus.Created => order.Products.Any(p => p.UnitPrice > 0) ? "Card" : "Transfer",
-                    _ => "Card"
+                    OrderStatus.Created => order.Products.Any(p => p.UnitPrice > 0) ? "CreditCard" : "Transfer",
+                    _ => "CreditCard"
                 },
                 products = order.Products.Select(p => new { name = p.Name, unitPrice = p.UnitPrice }).ToArray()
             };
