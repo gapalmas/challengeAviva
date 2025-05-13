@@ -25,7 +25,7 @@ namespace App.Application.Services
 
             if (provider != null)
             {
-                var order = new Order { Products = products.ToList(), Fee = provider.CalculateFee(total, dto.PaymentMode), ProviderKey = provider.Name };
+                var order = new Order { Products = products.ToList(), Fee = provider.CalculateFee(total, dto.PaymentMode), ProviderKey = provider.Name, PaymentMode = dto.PaymentMode };
 
                 if (!await provider.CreateOrderAsync(order))
                     throw new Exception($"Provider {provider.Name} failed to create order");

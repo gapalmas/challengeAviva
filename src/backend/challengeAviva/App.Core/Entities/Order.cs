@@ -8,6 +8,7 @@ namespace App.Core.Entities
         public List<Product> Products { get; set; } = new();
         public decimal Fee { get; set; }
         public string ProviderKey { get; set; } = string.Empty;
+        public PaymentMode PaymentMode { get; set; }
         public OrderStatus Status { get; set; } = OrderStatus.Created;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public decimal Total => Products.Sum(p => p.UnitPrice);
