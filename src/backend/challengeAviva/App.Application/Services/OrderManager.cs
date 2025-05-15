@@ -3,14 +3,16 @@ using Enums = App.Core.Enums;
 using App.Core.Interfaces;
 using App.Infrastructure.Repository;
 using Req = App.Core.Dto.Request;
+using AutoMapper;
 
 namespace App.Application.Services
 {
-    public class OrderManager(IProductRepository products, IOrderRepository orders, IEnumerable<IPaymentProvider> providers) : IOrderManager
+    public class OrderManager(IProductRepository products, IOrderRepository orders, IEnumerable<IPaymentProvider> providers, IMapper mapper) : IOrderManager
     {
         private readonly IProductRepository _products = products;
         private readonly IOrderRepository _orders = orders;
         private readonly IEnumerable<IPaymentProvider> _providers = providers;
+        private readonly IMapper _mapper = mapper;
 
         public async Task<Order> CreateOrderAsync(Req.OrderRequestDto dto)
         {
@@ -25,7 +27,10 @@ namespace App.Application.Services
 
             if (provider != null)
             {
-                var order = new Order { Products = products.ToList(), Fee = provider.CalculateFee(total, dto.PaymentMode), ProviderKey = provider.Name, PaymentMode = dto.PaymentMode };
+                var order = _mapper.Map<Order>(dto);
+                order.Products = products.ToList();
+                order.Fee = provider.CalculateFee(total, dto.PaymentMode);
+                order.ProviderKey = provider.Name;
 
                 if (!await provider.CreateOrderAsync(order))
                     throw new Exception($"Provider {provider.Name} failed to create order");
