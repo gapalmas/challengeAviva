@@ -6,6 +6,17 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowFrontend", policy =>
+            {
+                policy
+                    .WithOrigins("http://localhost:5173") // URL de tu frontend
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+            });
+        });
+
         // Servicios de la app
         builder.Services.AddControllers();
         builder.Services.AddProjectDependencies(); // <- tu método de inyección central
