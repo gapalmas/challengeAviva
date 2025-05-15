@@ -4,6 +4,7 @@ using App.Core.Interfaces;
 using App.Infrastructure.Repository;
 using Req = App.Core.Dto.Request;
 using AutoMapper;
+using App.Application.Messages;
 
 namespace App.Application.Services
 {
@@ -33,13 +34,13 @@ namespace App.Application.Services
                 order.ProviderKey = provider.Name;
 
                 if (!await provider.CreateOrderAsync(order))
-                    throw new Exception($"Provider {provider.Name} failed to create order");
+                    throw new Exception(MessageServices.FailedCreateOrder);
 
                 await _orders.AddAsync(order);
                 return order;
             }
 
-            throw new Exception("No provider supports this payment mode.");
+            throw new Exception(MessageServices.NoProviderSupportPayment);
         }
 
         public Task<IEnumerable<Order>> GetAllAsync() => _orders.GetAllAsync();

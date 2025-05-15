@@ -26,7 +26,10 @@
       "launchUrl": "swagger",
       "applicationUrl": "https://localhost:7203;http://localhost:5122",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ApiKey": "apikey-fj9esodija09s2",
+        "BaseUrlPagaFacil": "https://app-paga-chg-aviva.azurewebsites.net",
+        "BaseUrlCazaPagos": "https://app-caza-chg-aviva.azurewebsites.net"
       }
     },
     "IIS Express": {

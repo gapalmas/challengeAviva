@@ -2,26 +2,25 @@
 using App.Core.Enums;
 using App.Core.Interfaces;
 using Flurl.Http;
-using Newtonsoft.Json;
-using System.Xml;
+using CommonConst = App.Application.Helpers.Constants.CommonConstants;
 
 namespace App.Application.Services
 {
     public class CazaPagosProvider : IPaymentProvider
     {
-        private const string ApiKey = "apikey-fj9esodija09s2";
-        private const string BaseUrl = "https://app-caza-chg-aviva.azurewebsites.net";
+        private readonly string ApiKey = Environment.GetEnvironmentVariable(CommonConst.ApiKey) is string value ? value : "";
+        private readonly string BaseUrl = Environment.GetEnvironmentVariable(CommonConst.BaseUrlCazaPagos) is string value ? value : "";
 
-        public string Name => "CazaPagos";
+        public string Name => CommonConst.CazaPagos;
 
         public bool Supports(PaymentMode mode) =>
-            mode is PaymentMode.Card or PaymentMode.Transfer;
+            mode is PaymentMode.CreditCard or PaymentMode.Transfer;
 
         public decimal CalculateFee(decimal amount, PaymentMode mode)
         {
             return mode switch
             {
-                PaymentMode.Card => amount switch
+                PaymentMode.CreditCard => amount switch
                 {
                     <= 1500 => amount * 0.02m,
                     <= 5000 => amount * 0.015m,
@@ -45,14 +44,14 @@ namespace App.Application.Services
             {
                 method = order.Status switch
                 {
-                    OrderStatus.Created => order.Products.Any(p => p.UnitPrice > 0) ? "CreditCard" : "Transfer",
-                    _ => "CreditCard"
+                    OrderStatus.Created => order.Products.Any(p => p.UnitPrice > 0) ? nameof(PaymentMode.CreditCard) : nameof(PaymentMode.Transfer),
+                    _ => nameof(PaymentMode.CreditCard)
                 },
                 products = order.Products.Select(p => new { name = p.Name, unitPrice = p.UnitPrice }).ToArray()
             };
 
             var response = await $"{BaseUrl}/Order"
-                .WithHeader("x-api-key", ApiKey)
+                .WithHeader(CommonConst.xapikey, ApiKey)
                 .PostJsonAsync(payload);
 
             return response.StatusCode == 200;

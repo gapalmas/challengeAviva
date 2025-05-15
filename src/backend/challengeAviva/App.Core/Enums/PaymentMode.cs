@@ -1,4 +1,4 @@
 ﻿namespace App.Core.Enums
 {
-    public enum PaymentMode { Cash, Card, Transfer }
+    public enum PaymentMode { Cash, CreditCard, Transfer }
 }
